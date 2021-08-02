@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Crypto</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="btc">btc</string>
+    <string name="markets">Markets</string>
+    <string name="news">News</string>
+    <string name="wallet">Wallet</string>
+</resources>
