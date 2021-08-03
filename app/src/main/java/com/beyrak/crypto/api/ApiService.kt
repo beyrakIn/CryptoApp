@@ -6,6 +6,7 @@ import com.beyrak.crypto.enities.concretes.Result
 import com.beyrak.crypto.enities.concretes.blockchain.Wallet
 import com.beyrak.crypto.enities.concretes.messari.Data
 import com.beyrak.crypto.enities.concretes.messari.Market
+import com.beyrak.crypto.enities.concretes.messari.Profile
 import com.beyrak.crypto.enities.concretes.nomics.CoinItem
 import com.beyrak.crypto.enities.concretes.nomics.Spark
 import retrofit2.Call
@@ -41,8 +42,9 @@ interface ApiService {
 
 
     //Messari
-    @GET("assets?fields=id,slug,symbol&limit=1000")
-    fun getCoins(): Call<Result<Data>>
+//    @GET("assets?fields=id,slug,symbol&limit=1000")
+    @GET("assets?fields=id,slug,symbol,metrics/market_data/percent_change_usd_last_24_hours,metrics/market_data/price_usd&limit=1000")
+    fun getCoins(): Call<Result<List<Data>>>
 
     @GET("markets")
     fun getMarkets(): Call<Result<Market>>
@@ -50,7 +52,7 @@ interface ApiService {
     @GET("assets/{symbol}/profile")
     fun getCoinProfile(
         @Path("symbol") symbol: String
-    ): Call<Result<Data>>
+    ): Call<Result<Profile>>
 
 
     //Blockchain

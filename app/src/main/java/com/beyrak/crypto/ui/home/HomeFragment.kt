@@ -9,16 +9,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.beyrak.crypto.adapters.HomeAdapter
 import com.beyrak.crypto.api.ApiService
-import com.beyrak.crypto.api.Config.Companion.retrofit
+import com.beyrak.crypto.api.Config.Companion.retrofitMessari
 import com.beyrak.crypto.databinding.FragmentHomeBinding
-import com.beyrak.crypto.enities.concretes.Coin
 import com.beyrak.crypto.enities.concretes.Result
+import com.beyrak.crypto.enities.concretes.messari.Data
 import kotlinx.coroutines.Job
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class HomeFragment : Fragment() {
 
@@ -60,7 +58,8 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val dataService = retrofit.create(ApiService::class.java)
+//        val dataService = retrofit.create(ApiService::class.java)
+        val dataServiceMessari = retrofitMessari.create(ApiService::class.java)
 
 
 /*        dataService.getMap(apiKey).enqueue(object : Callback<Result<Map>> {
@@ -71,14 +70,12 @@ class HomeFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<Result<Map>>, t: Throwable) {
-                println("=========================================")
                 println(t.message)
-                println("=========================================")
             }
         })*/
 
         try {
-            dataService.getData(apiKey).enqueue(object : Callback<Result<List<Coin>>> {
+/*            dataService.getData(apiKey).enqueue(object : Callback<Result<List<Coin>>> {
                 override fun onResponse(call: Call<Result<List<Coin>>>, response: Response<Result<List<Coin>>>) {
                     try {
                         binding.verticalRecyclerView.layoutManager = LinearLayoutManager(context)
@@ -90,6 +87,30 @@ class HomeFragment : Fragment() {
 
                 override fun onFailure(call: Call<Result<List<Coin>>>, t: Throwable) {
                     Toast.makeText(context, t.localizedMessage, Toast.LENGTH_SHORT).show()
+                }
+
+            })*/
+
+            dataServiceMessari.getCoins().enqueue(object : Callback<Result<List<Data>>> {
+                override fun onResponse(
+                    call: Call<Result<List<Data>>>,
+                    response: Response<Result<List<Data>>>
+                ) {
+                    try {
+                        binding.verticalRecyclerView.layoutManager = LinearLayoutManager(context)
+                        binding.verticalRecyclerView.adapter =
+                            response.body()?.let { HomeAdapter(it.data) }
+                    } catch (e: Exception) {
+                        Toast.makeText(context, response.errorBody()?.string(), Toast.LENGTH_SHORT)
+                            .show()
+                        println("Error: " + e.localizedMessage)
+                    }
+                    println(response.message())
+                }
+
+                override fun onFailure(call: Call<Result<List<Data>>>, t: Throwable) {
+                    Toast.makeText(context, t.localizedMessage, Toast.LENGTH_SHORT).show()
+                    println(t.localizedMessage)
                 }
 
             })

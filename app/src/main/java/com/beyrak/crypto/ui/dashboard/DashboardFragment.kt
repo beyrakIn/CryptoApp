@@ -1,16 +1,12 @@
 package com.beyrak.crypto.ui.dashboard
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import com.beyrak.crypto.api.ApiService
-import com.beyrak.crypto.api.Config.Companion.retrofit
 import com.beyrak.crypto.api.Config.Companion.retrofitBlockchain
 import com.beyrak.crypto.databinding.FragmentDashboardBinding
 import com.beyrak.crypto.enities.concretes.blockchain.Wallet

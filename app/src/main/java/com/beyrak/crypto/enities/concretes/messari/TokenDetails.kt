@@ -18,7 +18,7 @@ data class TokenDetails(
     val percentage_allocated_to_organizations_or_founders_supply: Double,
     val percentage_allocated_to_premined_or_airdrops_from_initial_supply: Double,
     val sales_rounds: Any,
-    val targeted_block_time_in_sec: Double,
+    val targeted_block_time_in_sec: Int,
     val type: String,
     val usage: String
 )
