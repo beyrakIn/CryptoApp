@@ -6,7 +6,7 @@
     <dimen name="card_vertical_margin">8dp</dimen>
     <dimen name="card_horizontal_padding">8dp</dimen>
     <dimen name="card_vertical_padding">8dp</dimen>
-    <dimen name="card_radius">8dp</dimen>
+    <dimen name="card_radius">16dp</dimen>
     <dimen name="activity_horizontal_padding">16dp</dimen>
     <dimen name="activity_vertical_padding">16dp</dimen>
     <dimen name="home_icon_size">64dp</dimen>

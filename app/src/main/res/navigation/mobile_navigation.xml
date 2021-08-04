@@ -19,9 +19,9 @@
 
     <fragment
         android:id="@+id/navigation_news"
-        android:name="com.beyrak.crypto.ui.notifications.NotificationsFragment"
+        android:name="com.beyrak.crypto.ui.news.NewsFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_news" />
 
     <fragment
         android:id="@+id/navigation_markets"

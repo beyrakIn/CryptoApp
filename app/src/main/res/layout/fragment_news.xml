@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:background="@color/background"
-    android:orientation="vertical"
-    tools:context=".ui.home.HomeFragment">
+    android:layout_height="match_parent"
+    tools:context=".ui.news.NewsFragment">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/verticalRecyclerView"
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:scrollbars="vertical"
         android:splitMotionEvents="true"
+        android:scrollbars="vertical"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-        tools:listitem="@layout/vertical_crypto_card" />
-</LinearLayout>
+        android:orientation="vertical"
+        tools:listitem="@layout/news_card"
+        android:layout_height="wrap_content"/>
+</RelativeLayout>

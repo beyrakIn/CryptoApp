@@ -9,7 +9,6 @@ import com.beyrak.crypto.R
 import com.robinhood.spark.SparkView
 
 class CoinViewHolder(val view: View) : RecyclerView.ViewHolder(view){
-    val card: LinearLayout  = view.findViewById(R.id.card)
     val coinSymbol: TextView = view.findViewById(R.id.coinSymbol)
     val coinPrice: TextView = view.findViewById(R.id.coinPrice)
     val coinLogo: ImageView = view.findViewById(R.id.coinLogo)

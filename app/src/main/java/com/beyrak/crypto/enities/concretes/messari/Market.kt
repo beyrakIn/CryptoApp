@@ -20,5 +20,5 @@ data class Market(
     val trade_start: String,
     val version: Int,
     val volume_last_24_hours: Any,
-    val vwap_weight: Int
+    val vwap_weight: Double
 )

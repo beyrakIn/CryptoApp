@@ -9,26 +9,26 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import com.beyrak.crypto.R
 import com.beyrak.crypto.api.ApiService
 import com.beyrak.crypto.api.Config
 import com.beyrak.crypto.enities.concretes.Result
 import com.beyrak.crypto.enities.concretes.messari.Data
+import com.beyrak.crypto.enities.concretes.messari.News
 import com.beyrak.crypto.enities.concretes.messari.Profile
+import com.beyrak.crypto.enities.concretes.spark.Spark
 import com.beyrak.crypto.views.CoinViewHolder
 import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 import kotlin.random.Random.Default.nextFloat
 
 
 class HomeAdapter(private val coinList: List<Data>) : RecyclerView.Adapter<CoinViewHolder>() {
-//    private val dataService2 = Config.retrofit2.create(ApiService::class.java)
+    //    private val dataService2 = Config.retrofit2.create(ApiService::class.java)
     private val dataServiceMessari = Config.retrofitMessari.create(ApiService::class.java)
 
 
@@ -45,10 +45,11 @@ class HomeAdapter(private val coinList: List<Data>) : RecyclerView.Adapter<CoinV
     override fun onBindViewHolder(holder: CoinViewHolder, position: Int) {
         val coin = coinList[position]
         holder.coinSymbol.text = coin.symbol
-        holder.coinPrice.text = ((Math.round(coin.metrics.market_data.price_usd * 1000.0) / 1000.0).toString()) + '$'
+        holder.coinPrice.text =
+            ((Math.round(coin.metrics.market_data.price_usd * 1000.0) / 1000.0).toString()) + '$'
         holder.percent.text =
             (((coin.metrics.market_data.percent_change_usd_last_24_hours * 100.0).roundToInt() / 100.0).toString()) + "%"
-        val rank= position + 1
+        val rank = position + 1
         holder.coinRank.text = "#$rank"
 
         if (coin.metrics.market_data.percent_change_usd_last_24_hours > 0) {
@@ -64,46 +65,44 @@ class HomeAdapter(private val coinList: List<Data>) : RecyclerView.Adapter<CoinV
 
         Picasso.get().load(logoUrl).into(holder.coinLogo)
 
-        val randomValues = List(30) { nextFloat() + 5 }
+/*        val randomValues = List(30) { nextFloat() + 5 }
 
 
         holder.sparkView.adapter = SparkViewAdapter(randomValues)
-        holder.sparkView.lineWidth = 4F
+        holder.sparkView.lineWidth = 4F*/
 
-        val currentTime: String = SimpleDateFormat("yyyy-MM-dd'T'h:m:ss").format(Date())+'Z'
-/*
-        dataService2.getCoinSpark(Config.nKey, coin.symbol, "2021-07-29T11:40:28Z", "2021-07-30T11:40:28Z")
-            .enqueue(object : Callback<List<Spark>>{
-                override fun onResponse(call: Call<List<Spark>>, response: Response<List<Spark>>) {
-                    if (response.isSuccessful){
-                        val sparkList: MutableList<Float> = ArrayList()
-                        for (i in response.body()?.get(0)?.prices!!){
-                            sparkList += i.toFloat()
+//        val currentTime: String = SimpleDateFormat("yyyy-MM-dd'T'h:m:ss").format(Date()) + 'Z'
+
+        try {
+            dataServiceMessari.getSparkData(coin.slug)//,"2021-07-02", "2021-08-03", "1d")
+                .enqueue(object : Callback<Result<Spark>> {
+                    override fun onResponse(
+                        call: Call<Result<Spark>>,
+                        response: Response<Result<Spark>>
+                    ) {
+                        if (response.isSuccessful) {
+                            val sparkList: MutableList<Float> = ArrayList()
+                            for (i in response.body()?.data?.values!!) {
+                                sparkList += i[4].toFloat()
+                            }
+
+                            holder.sparkView.adapter = SparkViewAdapter(sparkList)
+                            holder.sparkView.lineWidth = 3F
+                        } else {
+//                            Toast.makeText(holder.itemView.context,response.errorBody()?.string(),Toast.LENGTH_SHORT).show()
+                            println("erorrrrrr " + response.errorBody()?.string())
                         }
 
-                        holder.sparkView.adapter = SparkViewAdapter(sparkList)
-                        holder.sparkView.lineWidth = 7F
-                    }else{
-                        println("=================================")
-                        println(response.message())
-                        println(response.errorBody()?.string())
-                        println(currentTime)
-                        println("=================================")
-                        Toast.makeText(
-                            holder.view.context, response.errorBody()?.string(), Toast.LENGTH_SHORT
-                        ).show()
                     }
-                }
 
-                override fun onFailure(call: Call<List<Spark>>, t: Throwable) {
-                    Toast.makeText(
-                        holder.view.context, t.localizedMessage, Toast.LENGTH_SHORT
-                    ).show()
-                }
+                    override fun onFailure(call: Call<Result<Spark>>, t: Throwable) {
+                        println("errorrrr" + t.localizedMessage)
+                    }
 
-            })
-
-*/
+                })
+        } catch (e: Exception) {
+            println("erorrr" + e.localizedMessage)
+        }
 
 
 
@@ -122,27 +121,33 @@ class HomeAdapter(private val coinList: List<Data>) : RecyclerView.Adapter<CoinV
             val coinRank = view.findViewById<TextView>(R.id.coinRank)
 
 
-            dataServiceMessari.getCoinProfile(coin.symbol).enqueue(object : Callback<Result<Profile>>{
-                override fun onResponse(call: Call<Result<Profile>>, response: Response<Result<Profile>>) {
-                    val profile: Result<Profile>? = response.body()
-                    coinName.text = profile?.data?.name
-                    coinSymbol.text = profile?.data?.symbol
-                    coinPrice.text = ((Math.round(coin.metrics.market_data.price_usd * 1000.0) / 1000.0).toString()) + '$'
-                    coinRank.text = "#$rank"
-                    coinCredentials.text = "CATEGORY: " + profile?.data?.category +
-                            "\n\n" + "SECTOR: " + profile?.data?.sector +
-                            "\n\n" + "OVERVIEW: " + profile?.data?.overview +
-                            "\n\n" + "TECHNOLOGY: " + profile?.data?.technology + "\n\n"
+            dataServiceMessari.getCoinProfile(coin.symbol)
+                .enqueue(object : Callback<Result<Profile>> {
+                    override fun onResponse(
+                        call: Call<Result<Profile>>,
+                        response: Response<Result<Profile>>
+                    ) {
+                        val profile: Result<Profile>? = response.body()
+                        coinName.text = profile?.data?.name
+                        coinSymbol.text = profile?.data?.symbol
+                        coinPrice.text =
+                            ((Math.round(coin.metrics.market_data.price_usd * 1000.0) / 1000.0).toString()) + '$'
+                        coinRank.text = "#$rank"
+                        coinCredentials.text = //"CATEGORY: " + profile?.data?.category +
+                                "\n\n" + "SECTOR: " + profile?.data?.sector +
+                                "\n\n" + "OVERVIEW: " + profile?.data?.overview
+//                                "\n\n" + "TECHNOLOGY: " + profile?.data?.technology + "\n\n"
 
-                    coinDesc.text = "DESCRIPTION: " + profile?.data?.token_distribution?.description
+                        coinDesc.text =
+                            "DESCRIPTION: " + profile?.data?.token_distribution?.description
 
-                    Picasso.get().load(logoUrl).into(coinLogo)
-                }
+                        Picasso.get().load(logoUrl).into(coinLogo)
+                    }
 
-                override fun onFailure(call: Call<Result<Profile>>, t: Throwable) {
-                    println(t.localizedMessage)
-                }
-            })
+                    override fun onFailure(call: Call<Result<Profile>>, t: Throwable) {
+                        println(t.localizedMessage)
+                    }
+                })
 
             dialog.setCancelable(false)
             dialog.setContentView(view)
