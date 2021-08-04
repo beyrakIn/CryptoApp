@@ -20,6 +20,7 @@ import com.beyrak.crypto.enities.concretes.Result
 import com.beyrak.crypto.enities.concretes.messari.Data
 import com.beyrak.crypto.enities.concretes.messari.Market
 import com.beyrak.crypto.enities.concretes.messari.News
+import com.tapadoo.alerter.Alerter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -59,13 +60,24 @@ class MarketsFragment : Fragment() {
                     binding.recyclerView.adapter =
                         response.body()?.let { MarketAdapter(it.data) }
                 } else {
-
+                    activity?.let { it1 ->
+                        Alerter.create(it1)
+                            .setTitle("Alert Title")
+                            .setText(response.errorBody()?.string())
+                            .setBackgroundColorRes(R.color.purple_200)
+                            .show()
+                    }
                 }
             }
 
             override fun onFailure(call: Call<Result<List<Market>>>, t: Throwable) {
-                Toast.makeText(context, t.localizedMessage, Toast.LENGTH_LONG).show()
-                println(t.localizedMessage + "errorrr")
+                activity?.let { it1 ->
+                    Alerter.create(it1)
+                        .setTitle("Alert Title")
+                        .setText(t.localizedMessage)
+                        .setBackgroundColorRes(R.color.purple_200)
+                        .show()
+                }
             }
 
 

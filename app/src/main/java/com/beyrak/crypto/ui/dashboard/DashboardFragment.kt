@@ -1,15 +1,18 @@
 package com.beyrak.crypto.ui.dashboard
 
+import android.app.Activity
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.beyrak.crypto.R
 import com.beyrak.crypto.api.ApiService
 import com.beyrak.crypto.api.Config.Companion.retrofitBlockchain
 import com.beyrak.crypto.databinding.FragmentDashboardBinding
 import com.beyrak.crypto.enities.concretes.blockchain.Wallet
+import com.tapadoo.alerter.Alerter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -53,12 +56,13 @@ class DashboardFragment : Fragment() {
                             binding.walletInfo.text = wallet?.hash160 +
                                     "\n" + "Total balance: " + wallet?.final_balance + " SATOSHI"
                         }else{
-                            Toast.makeText(context, response.errorBody()?.string(), Toast.LENGTH_LONG).show()
+                            activity?.let { it1 -> response.errorBody()?.let { it2 -> alert(it1, "Error", it2.string()) } }
                         }
                     }
 
                     override fun onFailure(call: Call<Wallet>, t: Throwable) {
-                        Toast.makeText(context, t.localizedMessage, Toast.LENGTH_LONG).show()
+//                        Toast.makeText(context, t.localizedMessage, Toast.LENGTH_LONG).show()
+                        activity?.let { it1 -> alert(it1, "Error", t.localizedMessage) }
                     }
 
                 })
@@ -69,5 +73,13 @@ class DashboardFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    fun alert(parent: Activity, title: String, text: String) {
+        Alerter.create(parent)
+            .setTitle(title)
+            .setText(text)
+            .setBackgroundColorRes(R.color.purple_200)
+            .show()
     }
 }

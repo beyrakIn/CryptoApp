@@ -1,6 +1,7 @@
 package com.beyrak.crypto.adapters
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.graphics.Color
 import android.support.design.widget.BottomSheetDialog
 import android.support.v7.widget.RecyclerView
@@ -19,6 +20,7 @@ import com.beyrak.crypto.enities.concretes.messari.Profile
 import com.beyrak.crypto.enities.concretes.spark.Spark
 import com.beyrak.crypto.views.CoinViewHolder
 import com.squareup.picasso.Picasso
+import com.tapadoo.alerter.Alerter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -65,12 +67,6 @@ class HomeAdapter(private val coinList: List<Data>) : RecyclerView.Adapter<CoinV
 
         Picasso.get().load(logoUrl).into(holder.coinLogo)
 
-/*        val randomValues = List(30) { nextFloat() + 5 }
-
-
-        holder.sparkView.adapter = SparkViewAdapter(randomValues)
-        holder.sparkView.lineWidth = 4F*/
-
 //        val currentTime: String = SimpleDateFormat("yyyy-MM-dd'T'h:m:ss").format(Date()) + 'Z'
 
         try {
@@ -89,19 +85,23 @@ class HomeAdapter(private val coinList: List<Data>) : RecyclerView.Adapter<CoinV
                             holder.sparkView.adapter = SparkViewAdapter(sparkList)
                             holder.sparkView.lineWidth = 3F
                         } else {
-//                            Toast.makeText(holder.itemView.context,response.errorBody()?.string(),Toast.LENGTH_SHORT).show()
-                            println("erorrrrrr " + response.errorBody()?.string())
+                            response.errorBody()?.string()?.let {
+                                alert(holder.itemView.context as Activity, "Error (",
+                                    it
+                                )
+                            }
+
                         }
 
                     }
 
                     override fun onFailure(call: Call<Result<Spark>>, t: Throwable) {
-                        println("errorrrr" + t.localizedMessage)
+                        alert(holder.itemView.context as Activity, "Error (", t.localizedMessage)
                     }
 
                 })
         } catch (e: Exception) {
-            println("erorrr" + e.localizedMessage)
+            alert(holder.itemView.context as Activity, "Error (", e.localizedMessage)
         }
 
 
@@ -134,8 +134,8 @@ class HomeAdapter(private val coinList: List<Data>) : RecyclerView.Adapter<CoinV
                             ((Math.round(coin.metrics.market_data.price_usd * 1000.0) / 1000.0).toString()) + '$'
                         coinRank.text = "#$rank"
                         coinCredentials.text = //"CATEGORY: " + profile?.data?.category +
-                                "\n\n" + "SECTOR: " + profile?.data?.sector +
-                                "\n\n" + "OVERVIEW: " + profile?.data?.overview
+                            "\n\n" + "SECTOR: " + profile?.data?.sector +
+                                    "\n\n" + "OVERVIEW: " + profile?.data?.overview
 //                                "\n\n" + "TECHNOLOGY: " + profile?.data?.technology + "\n\n"
 
                         coinDesc.text =
@@ -164,5 +164,13 @@ class HomeAdapter(private val coinList: List<Data>) : RecyclerView.Adapter<CoinV
 
     override fun getItemCount(): Int {
         return coinList.size
+    }
+
+    fun alert(parent: Activity, title: String, text: String) {
+        Alerter.create(parent)
+            .setTitle(title)
+            .setText(text)
+            .setBackgroundColorRes(R.color.purple_200)
+            .show()
     }
 }

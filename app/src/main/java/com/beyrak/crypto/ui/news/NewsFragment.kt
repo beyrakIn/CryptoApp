@@ -1,5 +1,6 @@
 package com.beyrak.crypto.ui.news
 
+import android.app.Activity
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -7,12 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.beyrak.crypto.R
 import com.beyrak.crypto.adapters.NewsAdapter
 import com.beyrak.crypto.api.ApiService
 import com.beyrak.crypto.api.Config
 import com.beyrak.crypto.databinding.FragmentNewsBinding
 import com.beyrak.crypto.enities.concretes.Result
 import com.beyrak.crypto.enities.concretes.messari.News
+import com.tapadoo.alerter.Alerter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -61,13 +64,13 @@ class NewsFragment : Fragment() {
                     binding.recyclerView.adapter =
                         response.body()?.let { NewsAdapter(it.data) }
                 } else {
-
+                    activity?.let { it1 -> response.errorBody()?.let { alert(it1, "Error", it.string()) } }
                 }
             }
 
             override fun onFailure(call: Call<Result<List<News>>>, t: Throwable) {
-                Toast.makeText(context, t.localizedMessage, Toast.LENGTH_LONG).show()
-                println(t.localizedMessage + "errorrr")
+                activity?.let { it1 -> alert(it1, "Error", t.localizedMessage) }
+//                println(t.localizedMessage + "errorrr")
             }
 
         })
@@ -77,5 +80,13 @@ class NewsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    fun alert(parent: Activity, title: String, text: String) {
+        Alerter.create(parent)
+            .setTitle(title)
+            .setText(text)
+            .setBackgroundColorRes(R.color.purple_200)
+            .show()
     }
 }
