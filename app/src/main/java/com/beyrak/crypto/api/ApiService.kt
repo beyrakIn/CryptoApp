@@ -4,6 +4,7 @@ import com.beyrak.crypto.enities.concretes.Coin
 import com.beyrak.crypto.enities.concretes.Map
 import com.beyrak.crypto.enities.concretes.Result
 import com.beyrak.crypto.enities.concretes.blockchain.Wallet
+import com.beyrak.crypto.enities.concretes.coinmarketcal.Response
 import com.beyrak.crypto.enities.concretes.messari.Data
 import com.beyrak.crypto.enities.concretes.messari.Market
 import com.beyrak.crypto.enities.concretes.messari.News
@@ -52,6 +53,10 @@ interface ApiService {
     //Blockchain
     @GET("rawaddr/{wallet}")
     fun getWallet(@Path("wallet") wallet: String): Call<Wallet>
+
+    //CoinMarketCal
+    @GET("coins")
+    fun getCalCoins(@Header("x-api-key") API_KEY: String): Call<Response>
 
 
 }

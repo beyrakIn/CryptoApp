@@ -28,6 +28,11 @@ class Config {
             .baseUrl("https://blockchain.info/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+
+        var retrofitCal = Retrofit.Builder()
+            .baseUrl("https://developers.coinmarketcal.com/v1/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
     }
 
 
