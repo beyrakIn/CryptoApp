@@ -7,4 +7,5 @@ import com.beyrak.crypto.R
 
 class MarketViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val name:TextView = itemView.findViewById(R.id.name)
+    val pair:TextView = itemView.findViewById(R.id.pair)
 }

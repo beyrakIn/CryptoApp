@@ -50,7 +50,7 @@ class MarketsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        dataServiceMessari.getMarkets().enqueue(object : Callback<Result<List<Market>>> {
+        dataServiceMessari.getMarkets(100).enqueue(object : Callback<Result<List<Market>>> {
             override fun onResponse(
                 call: Call<Result<List<Market>>>,
                 response: Response<Result<List<Market>>>

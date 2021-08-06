@@ -31,10 +31,14 @@ interface ApiService {
     fun getCoins(): Call<Result<List<Data>>>
 
     @GET("markets")
-    fun getMarkets(): Call<Result<List<Market>>>
+    fun getMarkets(
+        @Query("limit") limit: Int
+    ): Call<Result<List<Market>>>
 
     @GET("news")
-    fun getNews(): Call<Result<List<News>>>
+    fun getNews(
+        @Query("limit") limit: Int
+    ): Call<Result<List<News>>>
 
     @GET("assets/{symbol}/profile")
     fun getCoinProfile(

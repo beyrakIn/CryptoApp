@@ -54,15 +54,18 @@ class NewsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dataServiceMessari.getNews().enqueue(object : Callback<Result<List<News>>> {
+        dataServiceMessari.getNews(100).enqueue(object : Callback<Result<List<News>>> {
             override fun onResponse(
                 call: Call<Result<List<News>>>,
                 response: Response<Result<List<News>>>
             ) {
                 if (response.isSuccessful) {
-                    binding.recyclerView.layoutManager = LinearLayoutManager(context)
-                    binding.recyclerView.adapter =
-                        response.body()?.let { NewsAdapter(it.data) }
+                    try {
+                        binding.recyclerView.adapter =
+                            response.body()?.let { NewsAdapter(it.data) }
+                    } catch (e: Exception) {
+                        activity?.let { it1 -> alert(it1, "Error", e.localizedMessage) }
+                    }
                 } else {
                     activity?.let { it1 -> response.errorBody()?.let { alert(it1, "Error", it.string()) } }
                 }

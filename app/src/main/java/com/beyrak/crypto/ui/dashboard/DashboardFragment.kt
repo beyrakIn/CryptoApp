@@ -16,6 +16,7 @@ import com.tapadoo.alerter.Alerter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.Math.pow
 
 class DashboardFragment : Fragment() {
 
@@ -51,12 +52,19 @@ class DashboardFragment : Fragment() {
             dataService.getWallet(binding.walletAddress.editText?.text.toString())
                 .enqueue(object : Callback<Wallet> {
                     override fun onResponse(call: Call<Wallet>, response: Response<Wallet>) {
-                        if (response.isSuccessful){
+                        if (response.isSuccessful) {
                             val wallet: Wallet? = response.body()
-                            binding.walletInfo.text = wallet?.hash160 +
-                                    "\n" + "Total balance: " + wallet?.final_balance + " SATOSHI"
-                        }else{
-                            activity?.let { it1 -> response.errorBody()?.let { it2 -> alert(it1, "Error", it2.string()) } }
+                            binding.walletInfo.text = "Hash: " + wallet?.hash160
+                            binding.totalReceived.text =
+                                "Total Received: " + wallet?.total_received.toString()
+                            binding.totalSent.text = "Total Sent: " + wallet?.total_sent.toString()
+                            binding.finalBalance.text =
+                                "Final Balance: " + wallet?.final_balance.toString()
+                        } else {
+                            activity?.let { it1 ->
+                                response.errorBody()
+                                    ?.let { it2 -> alert(it1, "Error", it2.string()) }
+                            }
                         }
                     }
 

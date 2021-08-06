@@ -20,6 +20,7 @@ class MarketAdapter(private val marketList: List<Market>) : RecyclerView.Adapter
     override fun onBindViewHolder(holder: MarketViewHolder, position: Int) {
         val market:Market = marketList[position]
         holder.name.text = market.exchange_name
+        holder.pair.text = market.pair
     }
 
     override fun getItemCount(): Int {
