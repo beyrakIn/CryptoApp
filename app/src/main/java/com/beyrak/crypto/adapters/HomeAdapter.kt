@@ -13,25 +13,21 @@ import android.widget.TextView
 import com.beyrak.crypto.R
 import com.beyrak.crypto.api.ApiService
 import com.beyrak.crypto.api.Config
+import com.beyrak.crypto.enities.concretes.CoinDetails
 import com.beyrak.crypto.enities.concretes.Result
-import com.beyrak.crypto.enities.concretes.messari.Data
-import com.beyrak.crypto.enities.concretes.messari.News
-import com.beyrak.crypto.enities.concretes.messari.Profile
-import com.beyrak.crypto.enities.concretes.spark.Spark
+import com.beyrak.crypto.enities.concretes.coinmarketcap.CryptoCurrencyMap
 import com.beyrak.crypto.views.CoinViewHolder
 import com.squareup.picasso.Picasso
 import com.tapadoo.alerter.Alerter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.*
 import kotlin.math.roundToInt
-import kotlin.random.Random.Default.nextFloat
 
 
-class HomeAdapter(private val coinList: List<Data>) : RecyclerView.Adapter<CoinViewHolder>() {
-    //    private val dataService2 = Config.retrofit2.create(ApiService::class.java)
-    private val dataServiceMessari = Config.retrofitMessari.create(ApiService::class.java)
+class HomeAdapter(private val coinList: List<CryptoCurrencyMap>) :
+    RecyclerView.Adapter<CoinViewHolder>() {
+    private val dataServiceCap = Config.retrofitCap.create(ApiService::class.java)
 
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): CoinViewHolder {
@@ -46,65 +42,74 @@ class HomeAdapter(private val coinList: List<Data>) : RecyclerView.Adapter<CoinV
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: CoinViewHolder, position: Int) {
         val coin = coinList[position]
-        holder.coinSymbol.text = coin.symbol
-        holder.coinPrice.text =
-            ((Math.round(coin.metrics.market_data.price_usd * 1000.0) / 1000.0).toString()) + '$'
-        holder.percent.text =
-            (((coin.metrics.market_data.percent_change_usd_last_24_hours * 100.0).roundToInt() / 100.0).toString()) + "%"
-        val rank = position + 1
-        holder.coinRank.text = "#$rank"
+        var coinDetails: CoinDetails
 
-        if (coin.metrics.market_data.percent_change_usd_last_24_hours > 0) {
-            holder.percent.setTextColor(Color.GREEN)
-            holder.sparkView.lineColor = Color.GREEN
-        } else {
-            holder.percent.setTextColor(Color.RED)
-            holder.sparkView.lineColor = Color.RED
-        }
+        holder.coinSymbol.text = coin.symbol
+        holder.coinRank.text = '#' + coin.rank.toString()
+
 
         val logoUrl: String =
             "https://s2.coinmarketcap.com/static/img/coins/128x128/" + coin.id + ".png"
 
         Picasso.get().load(logoUrl).into(holder.coinLogo)
 
-//        val currentTime: String = SimpleDateFormat("yyyy-MM-dd'T'h:m:ss").format(Date()) + 'Z'
 
-        try {
-            dataServiceMessari.getSparkData(coin.slug)//,"2021-07-02", "2021-08-03", "1d")
-                .enqueue(object : Callback<Result<Spark>> {
-                    override fun onResponse(
-                        call: Call<Result<Spark>>,
-                        response: Response<Result<Spark>>
-                    ) {
-                        if (response.isSuccessful) {
-                            val sparkList: MutableList<Float> = ArrayList()
-                            for (i in response.body()?.data?.values!!) {
-                                sparkList += i[4].toFloat()
+
+
+
+
+
+
+
+
+        dataServiceCap.getCapCoinDetails(coin.id)
+            .enqueue(object : Callback<Result<CoinDetails>> {
+                override fun onResponse(
+                    call: Call<Result<CoinDetails>>,
+                    response: Response<Result<CoinDetails>>
+                ) {
+                    if (response.isSuccessful) {
+                        coinDetails = response.body()!!.data
+
+                        holder.coinPrice.text =
+                            round(coinDetails.statistics.price, 100.0).toString() + '$'
+
+                        if (coinDetails.statistics.priceChangePercentage24h > 0) {
+                            holder.apply {
+                                percent.setTextColor(Color.GREEN)
+                                sparkView.lineColor = Color.GREEN
+                                percent.text = '↑' + round(
+                                    coinDetails.statistics.priceChangePercentage24h,
+                                    100.0
+                                ).toString() + "%"
                             }
-
-                            holder.sparkView.adapter = SparkViewAdapter(sparkList)
-                            holder.sparkView.lineWidth = 3F
                         } else {
-                            response.errorBody()?.string()?.let {
-                                alert(holder.itemView.context as Activity, "Error (",
-                                    it
-                                )
+                            holder.apply {
+                                percent.setTextColor(Color.RED)
+                                sparkView.lineColor = Color.RED
+                                percent.text = '↓' + round(
+                                    coinDetails.statistics.priceChangePercentage24h, 100.0
+                                ).toString() + "%"
                             }
-
                         }
-
+                    } else {
+                        alert(
+                            holder.itemView.context as Activity,
+                            "Error",
+                            response.errorBody()!!.string()
+                        )
                     }
+                }
 
-                    override fun onFailure(call: Call<Result<Spark>>, t: Throwable) {
-                        alert(holder.itemView.context as Activity, "Error (", t.localizedMessage)
-                    }
+                override fun onFailure(call: Call<Result<CoinDetails>>, t: Throwable) {
+                    alert(
+                        holder.itemView.context as Activity,
+                        "Error",
+                        t.localizedMessage!!
+                    )
+                }
 
-                })
-        } catch (e: Exception) {
-            alert(holder.itemView.context as Activity, "Error (", e.localizedMessage)
-        }
-
-
+            })
 
         holder.itemView.setOnClickListener {
             val dialog = BottomSheetDialog(holder.view.context)
@@ -121,32 +126,38 @@ class HomeAdapter(private val coinList: List<Data>) : RecyclerView.Adapter<CoinV
             val coinRank = view.findViewById<TextView>(R.id.coinRank)
 
 
-            dataServiceMessari.getCoinProfile(coin.symbol)
-                .enqueue(object : Callback<Result<Profile>> {
+            dataServiceCap.getCapCoinDetails(coin.id)
+                .enqueue(object : Callback<Result<CoinDetails>> {
                     override fun onResponse(
-                        call: Call<Result<Profile>>,
-                        response: Response<Result<Profile>>
+                        call: Call<Result<CoinDetails>>,
+                        response: Response<Result<CoinDetails>>
                     ) {
-                        val profile: Result<Profile>? = response.body()
-                        coinName.text = profile?.data?.name
-                        coinSymbol.text = profile?.data?.symbol
-                        coinPrice.text =
-                            ((Math.round(coin.metrics.market_data.price_usd * 1000.0) / 1000.0).toString()) + '$'
-                        coinRank.text = "#$rank"
-                        coinCredentials.text = //"CATEGORY: " + profile?.data?.category +
-                            "\n\n" + "SECTOR: " + profile?.data?.sector +
-                                    "\n\n" + "OVERVIEW: " + profile?.data?.overview
-//                                "\n\n" + "TECHNOLOGY: " + profile?.data?.technology + "\n\n"
+                        if (response.isSuccessful) {
+                            val coinDetails: CoinDetails = response.body()!!.data
+                            coinName.text = coinDetails.name
+                            coinSymbol.text = coinDetails.symbol
+                            coinPrice.text =
+                                round(coinDetails.statistics.price, 1000.0).toString() + '$'
+                            coinRank.text = '#' + coin.rank.toString()
+//                            coinCredentials.text = "OVERVIEW: " + coinDetails.category + "\n\n"
+                            coinDesc.text = coinDetails.description
 
-                        coinDesc.text =
-                            "DESCRIPTION: " + profile?.data?.token_distribution?.description
-
-                        Picasso.get().load(logoUrl).into(coinLogo)
+                            Picasso.get().load(logoUrl).into(coinLogo)
+                        } else {
+                            alert(
+                                holder.itemView.context as Activity,
+                                "Error",
+                                response.errorBody()!!.string()
+                            )
+                        }
                     }
 
-                    override fun onFailure(call: Call<Result<Profile>>, t: Throwable) {
-                        println(t.localizedMessage)
+                    override fun onFailure(call: Call<Result<CoinDetails>>, t: Throwable) {
+                        alert(
+                            holder.itemView.context as Activity, "Error", t.localizedMessage!!
+                        )
                     }
+
                 })
 
             dialog.setCancelable(false)
@@ -172,5 +183,9 @@ class HomeAdapter(private val coinList: List<Data>) : RecyclerView.Adapter<CoinV
             .setText(text)
             .setBackgroundColorRes(R.color.purple_200)
             .show()
+    }
+
+    fun round(num: Double, percent: Double): Double {
+        return ((num * percent).roundToInt() / percent)
     }
 }

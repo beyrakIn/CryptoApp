@@ -1,33 +1,30 @@
 package com.beyrak.crypto.ui.markets
 
+import android.app.Activity
 import android.arch.lifecycle.ViewModelProvider
+import android.os.Build
 import android.os.Bundle
+import android.support.annotation.RequiresApi
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import com.beyrak.crypto.Constants
 import com.beyrak.crypto.R
-import com.beyrak.crypto.adapters.HomeAdapter
 import com.beyrak.crypto.adapters.MarketAdapter
-import com.beyrak.crypto.adapters.NewsAdapter
 import com.beyrak.crypto.api.ApiService
 import com.beyrak.crypto.api.Config
-import com.beyrak.crypto.databinding.FragmentNewsBinding
 import com.beyrak.crypto.databinding.MarketsFragmentBinding
 import com.beyrak.crypto.enities.concretes.Result
-import com.beyrak.crypto.enities.concretes.messari.Data
-import com.beyrak.crypto.enities.concretes.messari.Market
-import com.beyrak.crypto.enities.concretes.messari.News
 import com.tapadoo.alerter.Alerter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import com.beyrak.crypto.enities.concretes.coinmarketcap.Data
 
 class MarketsFragment : Fragment() {
-
-    private val dataServiceMessari = Config.retrofitMessari.create(ApiService::class.java)
+    val dataServiceCap = Config.retrofitCap.create(ApiService::class.java)
 
     private var _binding: MarketsFragmentBinding? = null
 
@@ -47,41 +44,46 @@ class MarketsFragment : Fragment() {
     }
 
 
+
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        dataServiceMessari.getMarkets(100).enqueue(object : Callback<Result<List<Market>>> {
+
+        if (context?.let { Constants.isOnline(it) } == true)
+            getData()
+        else {
+            activity?.let { alert(it, "Network Problem", "Please check your internet connection.") }
+        }
+
+
+    }
+
+    private fun getData() {
+        dataServiceCap.getCapCoins().enqueue(object :
+            Callback<Result<Data>> {
             override fun onResponse(
-                call: Call<Result<List<Market>>>,
-                response: Response<Result<List<Market>>>
+                call: Call<Result<Data>>,
+                response: Response<Result<Data>>
             ) {
                 if (response.isSuccessful) {
                     binding.recyclerView.layoutManager = LinearLayoutManager(context)
                     binding.recyclerView.adapter =
-                        response.body()?.let { MarketAdapter(it.data) }
+                        response.body()?.let { MarketAdapter(it.data.exchangeMap.toList()) }
                 } else {
-                    activity?.let { it1 ->
-                        Alerter.create(it1)
-                            .setTitle("Alert Title")
-                            .setText(response.errorBody()?.string())
-                            .setBackgroundColorRes(R.color.purple_200)
-                            .show()
-                    }
+                    alert(activity!!, "Error", response.errorBody()!!.string())
                 }
             }
 
-            override fun onFailure(call: Call<Result<List<Market>>>, t: Throwable) {
-                activity?.let { it1 ->
-                    Alerter.create(it1)
-                        .setTitle("Alert Title")
-                        .setText(t.localizedMessage)
-                        .setBackgroundColorRes(R.color.purple_200)
-                        .show()
-                }
+            override fun onFailure(
+                call: Call<Result<Data>>,
+                t: Throwable
+            ) {
+                alert(activity!!, "Error", t.localizedMessage!!)
             }
-
 
         })
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -92,4 +94,11 @@ class MarketsFragment : Fragment() {
         ).get(MarketsViewModel::class.java)
     }
 
+    fun alert(parent: Activity, title: String, text: String) {
+        Alerter.create(parent)
+            .setTitle(title)
+            .setText(text)
+            .setBackgroundColorRes(R.color.purple_200)
+            .show()
+    }
 }

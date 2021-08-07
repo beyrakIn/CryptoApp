@@ -1,7 +1,7 @@
 package com.beyrak.crypto.enities.concretes.blockchain
 
 data class Tx(
-    val balance: Int,
+    val balance: Any,
     val block_height: Int,
     val block_index: Int,
     val double_spend: Boolean,

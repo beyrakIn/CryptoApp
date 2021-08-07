@@ -14,7 +14,6 @@ import com.beyrak.crypto.views.NewsViewHolder
 import org.jsoup.Jsoup
 
 class NewsAdapter(private val newsList: List<News>) : RecyclerView.Adapter<NewsViewHolder>() {
-    private val dataServiceMessari = Config.retrofitMessari.create(ApiService::class.java)
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): NewsViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
@@ -46,8 +45,6 @@ class NewsAdapter(private val newsList: List<News>) : RecyclerView.Adapter<NewsV
             alert.setTitle(news.title)
             alert.show()
         }
-
-
     }
 
     override fun getItemCount(): Int {

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/about_us"
+        android:icon="@drawable/ic_wallet_passes_app"
+        android:title="About us" />
+
+    <item
+        android:id="@+id/support_us"
+        android:icon="@drawable/ic_spreadsheet_app"
+        android:title="Support us" />
+</menu>

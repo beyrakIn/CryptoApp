@@ -1,13 +1,16 @@
 package com.beyrak.crypto.ui.news
 
 import android.app.Activity
+import android.os.Build
 import android.os.Bundle
+import android.support.annotation.RequiresApi
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.beyrak.crypto.Constants
 import com.beyrak.crypto.R
 import com.beyrak.crypto.adapters.NewsAdapter
 import com.beyrak.crypto.api.ApiService
@@ -52,8 +55,19 @@ class NewsFragment : Fragment() {
         return root
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (context?.let { Constants.isOnline(it) } == true)
+            getData()
+        else {
+            activity?.let { alert(it, "Network Problem", "Please check your internet connection.") }
+        }
+
+    }
+
+    private fun getData() {
         dataServiceMessari.getNews(100).enqueue(object : Callback<Result<List<News>>> {
             override fun onResponse(
                 call: Call<Result<List<News>>>,
@@ -64,20 +78,20 @@ class NewsFragment : Fragment() {
                         binding.recyclerView.adapter =
                             response.body()?.let { NewsAdapter(it.data) }
                     } catch (e: Exception) {
-                        activity?.let { it1 -> alert(it1, "Error", e.localizedMessage) }
+                        activity?.let { it1 -> alert(it1, "Error", e.localizedMessage!!) }
                     }
                 } else {
-                    activity?.let { it1 -> response.errorBody()?.let { alert(it1, "Error", it.string()) } }
+                    activity?.let { it1 ->
+                        response.errorBody()?.let { alert(it1, "Error", it.string()) }
+                    }
                 }
             }
 
             override fun onFailure(call: Call<Result<List<News>>>, t: Throwable) {
-                activity?.let { it1 -> alert(it1, "Error", t.localizedMessage) }
-//                println(t.localizedMessage + "errorrr")
+                activity?.let { it1 -> alert(it1, "Error", t.localizedMessage!!) }
             }
 
         })
-
     }
 
     override fun onDestroyView() {

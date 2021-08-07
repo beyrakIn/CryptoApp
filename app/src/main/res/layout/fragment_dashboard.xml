@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/inter_bold"
-        android:text="submit"
+        android:text="get wallet informations"
         android:textAllCaps="true"
         android:textColor="@color/purple_500"
         android:textSize="14sp" />
@@ -52,56 +52,103 @@
         app:cardElevation="0dp"
         app:strokeWidth="2dp">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/walletInfo"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_bold"
             android:paddingHorizontal="@dimen/card_horizontal_padding"
             android:paddingVertical="@dimen/card_vertical_padding"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-
-            <TextView
-                android:id="@+id/walletInfo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/inter_bold"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/totalReceived"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/inter_bold"
-                android:text="total received"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/totalSent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/inter_bold"
-                android:text="total sent"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/finalBalance"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/inter_bold"
-                android:text="final balance"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+            android:text="hash"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
 
     </android.support.design.card.MaterialCardView>
 
+    <android.support.design.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/card_vertical_margin"
+        android:background="?android:attr/selectableItemBackground"
+        android:checkable="true"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardCornerRadius="@dimen/card_radius"
+        app:cardElevation="0dp"
+        app:strokeWidth="2dp">
+
+        <TextView
+            android:id="@+id/totalReceived"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_bold"
+            android:paddingHorizontal="@dimen/card_horizontal_padding"
+            android:paddingVertical="@dimen/card_vertical_padding"
+            android:text="total received"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </android.support.design.card.MaterialCardView>
+
+    <android.support.design.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/card_vertical_margin"
+        android:background="?android:attr/selectableItemBackground"
+        android:checkable="true"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardCornerRadius="@dimen/card_radius"
+        app:cardElevation="0dp"
+        app:strokeWidth="2dp">
+
+        <TextView
+            android:id="@+id/totalSent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_bold"
+            android:paddingHorizontal="@dimen/card_horizontal_padding"
+            android:paddingVertical="@dimen/card_vertical_padding"
+            android:text="total sent"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </android.support.design.card.MaterialCardView>
+
+
+    <android.support.design.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/card_vertical_margin"
+        android:background="?android:attr/selectableItemBackground"
+        android:checkable="true"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardCornerRadius="@dimen/card_radius"
+        app:cardElevation="0dp"
+        app:strokeWidth="2dp">
+
+
+        <TextView
+            android:id="@+id/finalBalance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_bold"
+            android:paddingHorizontal="@dimen/card_horizontal_padding"
+            android:paddingVertical="@dimen/card_vertical_padding"
+            android:text="final balance"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </android.support.design.card.MaterialCardView>
 
 </LinearLayout>
