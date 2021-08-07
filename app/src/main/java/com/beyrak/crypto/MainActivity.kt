@@ -1,9 +1,12 @@
 package com.beyrak.crypto
 
 import android.app.Activity
+import android.os.Build
 import android.os.Bundle
+import android.support.annotation.RequiresApi
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.PopupMenu
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.beyrak.crypto.api.ApiService
@@ -16,16 +19,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import kotlin.math.roundToInt
-import com.beyrak.crypto.R
-
-import android.view.MenuInflater
-
-import android.widget.Toast
-
-import android.content.SharedPreferences
-import android.os.Build
-import android.support.annotation.RequiresApi
-import android.support.v7.widget.PopupMenu
 
 
 class MainActivity : AppCompatActivity() {
@@ -41,17 +34,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val navView: BottomNavigationView = binding.navView
-
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
-/*        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_home,
-                R.id.navigation_dashboard,
-                R.id.navigation_markets,
-                R.id.navigation_news
-            )
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)*/
         navView.setupWithNavController(navController)
 
         if (this.let { Constants.isOnline(it) })
@@ -63,6 +46,7 @@ class MainActivity : AppCompatActivity() {
         binding.actions.setOnClickListener {
             setPopUpMenu()
         }
+
     }
 
     private fun setPopUpMenu() {
@@ -90,15 +74,16 @@ class MainActivity : AppCompatActivity() {
             ) {
                 if (response.isSuccessful) {
                     val globalMetrics: GlobalMetrics = response.body()!!.data
-                    val text = "BTC Dominance: " + round(globalMetrics.btcDominance) + '%' +
-                            ", ETH Dominance: " + round(globalMetrics.ethDominance) + '%' +
-                            ", Active Crypto Currencies: " + globalMetrics.activeCryptoCurrencies +
-                            ", Total Crypto Currencies: " + globalMetrics.totalCryptoCurrencies
+                    val text = "Dominance: BTC: " + round(globalMetrics.btcDominance) + '%' +
+                            "  ETH: " + round(globalMetrics.ethDominance) + '%' +
+                            "  Cryptos: " + globalMetrics.totalCryptoCurrencies +
+                            "  Exchanges: " + globalMetrics.activeExchanges +
+                            "  Market Cap: " + globalMetrics.quotes[0].totalMarketCap +
+                            "  24h Vol: " + globalMetrics.quotes[0].totalVolume24H
                     binding.globalMetrics.text = text
                     binding.globalMetrics.isSelected = true
                 } else {
                     alert(this@MainActivity, "Error", response.errorBody()!!.string())
-
                 }
             }
 

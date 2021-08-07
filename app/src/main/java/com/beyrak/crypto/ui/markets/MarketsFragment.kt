@@ -44,7 +44,6 @@ class MarketsFragment : Fragment() {
     }
 
 
-
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -67,9 +66,12 @@ class MarketsFragment : Fragment() {
                 response: Response<Result<Data>>
             ) {
                 if (response.isSuccessful) {
-                    binding.recyclerView.layoutManager = LinearLayoutManager(context)
-                    binding.recyclerView.adapter =
-                        response.body()?.let { MarketAdapter(it.data.exchangeMap.toList()) }
+                    binding.recyclerView.apply {
+                        layoutManager = LinearLayoutManager(context)
+                        setItemViewCacheSize(50)
+                        adapter =
+                            response.body()?.let { MarketAdapter(it.data.exchangeMap.toList()) }
+                    }
                 } else {
                     alert(activity!!, "Error", response.errorBody()!!.string())
                 }

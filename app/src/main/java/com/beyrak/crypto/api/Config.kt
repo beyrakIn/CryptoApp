@@ -11,10 +11,6 @@ class Config {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-/*    var retrofit2 = Retrofit.Builder()
-        .baseUrl("https://api.nomics.com/v1/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()*/
 
         var retrofitMessari = Retrofit.Builder()
             .baseUrl("https://data.messari.io/api/v1/")
@@ -26,10 +22,6 @@ class Config {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-        var retrofitCal = Retrofit.Builder()
-            .baseUrl("https://developers.coinmarketcal.com/v1/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
     }
 
 
