@@ -3,10 +3,11 @@ package com.beyrak.crypto
 import android.app.Activity
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
-import android.support.design.widget.BottomNavigationView
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.PopupMenu
+import android.util.Log
+import androidx.annotation.RequiresApi
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.beyrak.crypto.api.ApiService
@@ -14,6 +15,11 @@ import com.beyrak.crypto.api.Config
 import com.beyrak.crypto.databinding.ActivityMainBinding
 import com.beyrak.crypto.enities.concretes.Result
 import com.beyrak.crypto.enities.concretes.blockchain.general.GlobalMetrics
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.tapadoo.alerter.Alerter
 import retrofit2.Call
 import retrofit2.Callback
@@ -23,6 +29,8 @@ import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity() {
     private val dataServiceCap = Config.retrofitCap.create(ApiService::class.java)
+
+    private var mRewardedAd: RewardedAd? = null
 
     private lateinit var binding: ActivityMainBinding
 
@@ -47,6 +55,34 @@ class MainActivity : AppCompatActivity() {
             setPopUpMenu()
         }
 
+        setBanner()
+    }
+
+    private fun setBanner() {
+        MobileAds.initialize(this) {}
+
+        val adRequest = AdRequest.Builder().build()
+        binding.adView.loadAd(adRequest)
+    }
+
+    private fun showAds() {
+        val adRequest = AdRequest.Builder().build()
+
+        RewardedAd.load(
+            this,
+            "ca-app-pub-2248916584991987/3927427402",
+            adRequest,
+            object : RewardedAdLoadCallback() {
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+                    Log.d("TAG", adError.message + "erorrrrrrrrrrrrrrrrr")
+                    mRewardedAd = null
+                }
+
+                override fun onAdLoaded(rewardedAd: RewardedAd) {
+                    mRewardedAd = rewardedAd
+                    alert(this@MainActivity, "Thanks!", "Thanks for support us.")
+                }
+            })
     }
 
     private fun setPopUpMenu() {
@@ -58,7 +94,7 @@ class MainActivity : AppCompatActivity() {
                     alert(this@MainActivity, "Error", "About Us")
                 }
                 R.id.support_us -> {
-                    alert(this@MainActivity, "Error", "Support Us")
+                    showAds()
                 }
             }
             true

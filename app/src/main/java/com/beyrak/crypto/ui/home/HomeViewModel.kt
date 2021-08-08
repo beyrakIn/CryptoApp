@@ -1,6 +1,6 @@
 package com.beyrak.crypto.ui.home
 
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.ViewModel
 
 class HomeViewModel() : ViewModel() {
 

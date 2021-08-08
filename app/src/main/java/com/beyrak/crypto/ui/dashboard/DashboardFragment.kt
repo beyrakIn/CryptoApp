@@ -3,8 +3,8 @@ package com.beyrak.crypto.ui.dashboard
 import android.app.Activity
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
-import android.support.v4.app.Fragment
+import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,7 +58,13 @@ class DashboardFragment : Fragment() {
                 if (context?.let { Constants.isOnline(it) } == true)
                     getData()
                 else {
-                    activity?.let { alert(it, "Network Problem", "Please check your internet connection.") }
+                    activity?.let {
+                        alert(
+                            it,
+                            "Network Problem",
+                            "Please check your internet connection."
+                        )
+                    }
                 }
             } else {
                 alert(activity!!, "Error", "Please enter wallet address")
@@ -74,11 +80,11 @@ class DashboardFragment : Fragment() {
                         val wallet: Wallet? = response.body()
                         binding.walletInfo.text = "Hash\n" + wallet?.hash160
                         binding.totalReceived.text =
-                            "Total Received\n" + wallet?.total_received.toString()
+                            "Total Received\n" + (wallet?.total_received?.div(100000000)).toString() + " BTC"
                         binding.totalSent.text =
-                            "Total Sent\n" + wallet?.total_sent.toString()
+                            "Total Sent\n" + (wallet?.total_sent?.div(100000000)).toString() + " BTC"
                         binding.finalBalance.text =
-                            "Final Balance\n" + wallet?.final_balance.toString()
+                            "Final Balance\n" + (wallet?.final_balance?.div(100000000)).toString() + " BTC"
                     } else {
                         alert(
                             activity!!, "Error", response.errorBody()!!.string()

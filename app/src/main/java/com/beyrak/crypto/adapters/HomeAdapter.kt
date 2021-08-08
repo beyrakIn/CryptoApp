@@ -3,13 +3,14 @@ package com.beyrak.crypto.adapters
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.Color
-import android.support.design.widget.BottomSheetDialog
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import com.beyrak.crypto.MainActivity
 import com.beyrak.crypto.R
 import com.beyrak.crypto.api.ApiService
 import com.beyrak.crypto.api.Config
@@ -32,8 +33,7 @@ class HomeAdapter(private val coinList: List<CryptoCurrencyMap>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): CoinViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
-            R.layout.vertical_crypto_card,
-            parent, false
+            R.layout.vertical_crypto_card, parent, false
         )
         return CoinViewHolder(view)
     }
@@ -112,7 +112,8 @@ class HomeAdapter(private val coinList: List<CryptoCurrencyMap>) :
             })
 
         holder.itemView.setOnClickListener {
-            val dialog = BottomSheetDialog(holder.view.context)
+            val dialog =
+                BottomSheetDialog(holder.view.context)
             val view =
                 LayoutInflater.from(holder.view.context).inflate(R.layout.coin_bottom_sheet, null)
 

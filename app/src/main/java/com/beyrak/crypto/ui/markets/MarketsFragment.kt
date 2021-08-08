@@ -1,12 +1,12 @@
 package com.beyrak.crypto.ui.markets
 
 import android.app.Activity
-import android.arch.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
+import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -67,7 +67,10 @@ class MarketsFragment : Fragment() {
             ) {
                 if (response.isSuccessful) {
                     binding.recyclerView.apply {
-                        layoutManager = LinearLayoutManager(context)
+                        layoutManager =
+                            LinearLayoutManager(
+                                context
+                            )
                         setItemViewCacheSize(50)
                         adapter =
                             response.body()?.let { MarketAdapter(it.data.exchangeMap.toList()) }
