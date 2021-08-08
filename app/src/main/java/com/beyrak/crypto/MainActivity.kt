@@ -1,8 +1,10 @@
 package com.beyrak.crypto
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -120,11 +122,17 @@ class MainActivity : AppCompatActivity() {
                     binding.globalMetrics.isSelected = true
                 } else {
                     alert(this@MainActivity, "Error", response.errorBody()!!.string())
+                    Handler().postDelayed({
+                        getData()
+                    }, 5000)
                 }
             }
 
             override fun onFailure(call: Call<Result<GlobalMetrics>>, t: Throwable) {
                 alert(this@MainActivity, "Error", t.localizedMessage!!)
+                Handler().postDelayed({
+                    getData()
+                }, 3000)
             }
         })
     }

@@ -3,6 +3,7 @@ package com.beyrak.crypto.ui.news
 import android.app.Activity
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.beyrak.crypto.Constants
 import com.beyrak.crypto.R
+import com.beyrak.crypto.adapters.HomeAdapter
 import com.beyrak.crypto.adapters.NewsAdapter
 import com.beyrak.crypto.api.ApiService
 import com.beyrak.crypto.api.Config
@@ -63,6 +65,7 @@ class NewsFragment : Fragment() {
             getData()
         else {
             activity?.let { alert(it, "Network Problem", "Please check your internet connection.") }
+            Handler().postDelayed({ getData() }, 5000)
         }
 
     }
@@ -77,6 +80,7 @@ class NewsFragment : Fragment() {
                     try {
                         binding.recyclerView.adapter =
                             response.body()?.let { NewsAdapter(it.data) }
+                        binding.progressBar.visibility = View.GONE
                     } catch (e: Exception) {
                         activity?.let { it1 -> alert(it1, "Error", e.localizedMessage!!) }
                     }
@@ -84,11 +88,13 @@ class NewsFragment : Fragment() {
                     activity?.let { it1 ->
                         response.errorBody()?.let { alert(it1, "Error", it.string()) }
                     }
+                    Handler().postDelayed({ getData() }, 5000)
                 }
             }
 
             override fun onFailure(call: Call<Result<List<News>>>, t: Throwable) {
                 activity?.let { it1 -> alert(it1, "Error", t.localizedMessage!!) }
+                Handler().postDelayed({ getData() }, 5000)
             }
 
         })

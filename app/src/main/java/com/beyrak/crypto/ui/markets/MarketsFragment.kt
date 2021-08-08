@@ -67,14 +67,11 @@ class MarketsFragment : Fragment() {
             ) {
                 if (response.isSuccessful) {
                     binding.recyclerView.apply {
-                        layoutManager =
-                            LinearLayoutManager(
-                                context
-                            )
                         setItemViewCacheSize(50)
                         adapter =
                             response.body()?.let { MarketAdapter(it.data.exchangeMap.toList()) }
                     }
+                    binding.progressBar.visibility = View.GONE
                 } else {
                     alert(activity!!, "Error", response.errorBody()!!.string())
                 }

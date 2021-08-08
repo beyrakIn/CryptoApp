@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
@@ -84,9 +85,10 @@ class HomeFragment : Fragment() {
                     try {
                         binding.verticalRecyclerView.apply {
                             setHasFixedSize(true)
-                            setItemViewCacheSize(200)
+                            setItemViewCacheSize(500)
                             this.adapter = adapter
                         }
+                        binding.progressBar.visibility = View.GONE
                     } catch (e: Exception) {
                         println(e.message + " errrrorrr")
                     }
