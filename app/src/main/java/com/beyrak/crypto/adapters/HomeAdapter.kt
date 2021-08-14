@@ -60,7 +60,10 @@ class HomeAdapter(private val coinList: List<CryptoCurrencyMap>) :
 
         val logoUrl: String =
             "https://s2.coinmarketcap.com/static/img/coins/128x128/" + coin.id + ".png"
+        val sparkUrl: String =
+            "https://s3.coinmarketcap.com/generated/sparklines/web/1d/usd/" + coin.id + ".png"
         Picasso.get().load(logoUrl).into(holder.coinLogo)
+        Picasso.get().load(sparkUrl).into(holder.sparkView)
 
 
         if (holder.itemView.context?.let { Constants.isOnline(it) } == true) {
@@ -101,7 +104,6 @@ class HomeAdapter(private val coinList: List<CryptoCurrencyMap>) :
                             if (coinDetails.statistics.priceChangePercentage24h > 0) {
                                 holder.apply {
                                     percent.setTextColor(Color.GREEN)
-                                    sparkView.lineColor = Color.GREEN
                                     percent.text = '↑' + round(
                                         coinDetails.statistics.priceChangePercentage24h, 100.0
                                     ).toString() + "%"
@@ -109,7 +111,6 @@ class HomeAdapter(private val coinList: List<CryptoCurrencyMap>) :
                             } else {
                                 holder.apply {
                                     percent.setTextColor(Color.RED)
-                                    sparkView.lineColor = Color.RED
                                     percent.text = '↓' + round(
                                         coinDetails.statistics.priceChangePercentage24h, 100.0
                                     ).toString() + "%"

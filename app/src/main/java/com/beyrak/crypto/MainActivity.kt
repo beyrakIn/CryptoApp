@@ -121,18 +121,18 @@ class MainActivity : AppCompatActivity() {
                     binding.globalMetrics.text = text
                     binding.globalMetrics.isSelected = true
                 } else {
-                    alert(this@MainActivity, "Error", response.errorBody()!!.string())
+//                    alert(this@MainActivity, "Error", response.errorBody()!!.string())
                     Handler().postDelayed({
                         getData()
-                    }, 5000)
+                    }, 1000)
                 }
             }
 
             override fun onFailure(call: Call<Result<GlobalMetrics>>, t: Throwable) {
-                alert(this@MainActivity, "Error", t.localizedMessage!!)
+//                alert(this@MainActivity, "Error", t.localizedMessage!!)
                 Handler().postDelayed({
                     getData()
-                }, 3000)
+                }, 1000)
             }
         })
     }

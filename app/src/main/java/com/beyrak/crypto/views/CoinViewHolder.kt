@@ -14,7 +14,7 @@ class CoinViewHolder(val view: View) : RecyclerView.ViewHolder(view){
     val coinPrice: TextView = view.findViewById(R.id.coinPrice)
     val coinPriceProgress: ProgressBar = view.findViewById(R.id.progressBar)
     val coinLogo: ImageView = view.findViewById(R.id.coinLogo)
-    val sparkView: SparkView = view.findViewById(R.id.sparkView)
+    val sparkView: ImageView = view.findViewById(R.id.sparkView)
     val percent: TextView = view.findViewById(R.id.percent)
     val coinRank: TextView = view.findViewById(R.id.coinRank)
 }

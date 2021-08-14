@@ -74,36 +74,37 @@ class HomeFragment : Fragment() {
     }
 
     private fun getData() {
-        dataServiceCap.getCapCoins().enqueue(object :
-            Callback<Result<Data>> {
-            override fun onResponse(
-                call: Call<Result<Data>>, response: Response<Result<Data>>
-            ) {
-                if (response.isSuccessful) {
-                    val data: Data = response.body()!!.data
-                    val adapter = HomeAdapter(data.cryptoCurrencyMap.toList())
-                    try {
-                        binding.verticalRecyclerView.apply {
-                            setHasFixedSize(true)
-                            setItemViewCacheSize(500)
-                            this.adapter = adapter
+        try {
+            dataServiceCap.getCapCoins().enqueue(object :
+                Callback<Result<Data>> {
+                override fun onResponse(
+                    call: Call<Result<Data>>, response: Response<Result<Data>>
+                ) {
+                    if (response.isSuccessful) {
+                        val data: Data = response.body()!!.data
+                        val adapter = HomeAdapter(data.cryptoCurrencyMap.toList())
+                        try {
+                            binding.verticalRecyclerView.apply {
+                                setHasFixedSize(true)
+                                setItemViewCacheSize(500)
+                                this.adapter = adapter
+                            }
+                            binding.progressBar.visibility = View.GONE
+                        } catch (e: Exception) {
+                            println(e.message + " errrrorrr")
                         }
-                        binding.progressBar.visibility = View.GONE
-                    } catch (e: Exception) {
-                        println(e.message + " errrrorrr")
+                    } else {
+                        alert(activity!!, "Error", response.errorBody()!!.string())
                     }
-                } else {
-                    alert(activity!!, "Error", response.errorBody()!!.string())
                 }
-            }
 
-            override fun onFailure(
-                call: Call<Result<Data>>, t: Throwable
-            ) {
-                activity?.let { alert(it, "Error", t.localizedMessage!!) }
-            }
+                override fun onFailure(call: Call<Result<Data>>, t: Throwable) {
+                    activity?.let { alert(it, "Error", t.localizedMessage!!) }
+                }
 
-        })
+            })
+        } catch (e: Exception) {
+        }
     }
 
 

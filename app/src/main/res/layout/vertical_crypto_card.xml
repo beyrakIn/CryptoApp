@@ -91,12 +91,12 @@
                 android:textColor="@color/black"
                 android:textSize="18sp" />
 
-            <com.robinhood.spark.SparkView
+            <ImageView
                 android:id="@+id/sparkView"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginStart="16dp"
-                android:paddingVertical="8dp" />
+                android:paddingEnd="8dp" />
 
         </LinearLayout>
     </LinearLayout>

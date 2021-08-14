@@ -59,33 +59,35 @@ class MarketsFragment : Fragment() {
     }
 
     private fun getData() {
-        dataServiceCap.getCapCoins().enqueue(object :
-            Callback<Result<Data>> {
-            override fun onResponse(
-                call: Call<Result<Data>>,
-                response: Response<Result<Data>>
-            ) {
-                if (response.isSuccessful) {
-                    binding.recyclerView.apply {
-                        setItemViewCacheSize(50)
-                        adapter =
-                            response.body()?.let { MarketAdapter(it.data.exchangeMap.toList()) }
+        try {
+            dataServiceCap.getCapCoins().enqueue(object :
+                Callback<Result<Data>> {
+                override fun onResponse(
+                    call: Call<Result<Data>>,
+                    response: Response<Result<Data>>
+                ) {
+                    if (response.isSuccessful) {
+                        binding.recyclerView.apply {
+                            setItemViewCacheSize(50)
+                            adapter =
+                                response.body()?.let { MarketAdapter(it.data.exchangeMap.toList()) }
+                        }
+                        binding.progressBar.visibility = View.GONE
+                    } else {
+                        alert(activity!!, "Error", response.errorBody()!!.string())
                     }
-                    binding.progressBar.visibility = View.GONE
-                } else {
-                    alert(activity!!, "Error", response.errorBody()!!.string())
                 }
-            }
 
-            override fun onFailure(
-                call: Call<Result<Data>>,
-                t: Throwable
-            ) {
-                alert(activity!!, "Error", t.localizedMessage!!)
-            }
+                override fun onFailure(
+                    call: Call<Result<Data>>,
+                    t: Throwable
+                ) {
+                    alert(activity!!, "Error", t.localizedMessage!!)
+                }
 
-        })
-
+            })
+        } catch (e: Exception) {
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

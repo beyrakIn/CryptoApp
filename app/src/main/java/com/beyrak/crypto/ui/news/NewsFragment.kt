@@ -71,33 +71,36 @@ class NewsFragment : Fragment() {
     }
 
     private fun getData() {
-        dataServiceMessari.getNews(100).enqueue(object : Callback<Result<List<News>>> {
-            override fun onResponse(
-                call: Call<Result<List<News>>>,
-                response: Response<Result<List<News>>>
-            ) {
-                if (response.isSuccessful) {
-                    try {
-                        binding.recyclerView.adapter =
-                            response.body()?.let { NewsAdapter(it.data) }
-                        binding.progressBar.visibility = View.GONE
-                    } catch (e: Exception) {
-                        activity?.let { it1 -> alert(it1, "Error", e.localizedMessage!!) }
+        try {
+            dataServiceMessari.getNews(100).enqueue(object : Callback<Result<List<News>>> {
+                override fun onResponse(
+                    call: Call<Result<List<News>>>,
+                    response: Response<Result<List<News>>>
+                ) {
+                    if (response.isSuccessful) {
+                        try {
+                            binding.recyclerView.adapter =
+                                response.body()?.let { NewsAdapter(it.data) }
+                            binding.progressBar.visibility = View.GONE
+                        } catch (e: Exception) {
+                            activity?.let { it1 -> alert(it1, "Error", e.localizedMessage!!) }
+                        }
+                    } else {
+                        activity?.let { it1 ->
+                            response.errorBody()?.let { alert(it1, "Error", it.string()) }
+                        }
+                        Handler().postDelayed({ getData() }, 5000)
                     }
-                } else {
-                    activity?.let { it1 ->
-                        response.errorBody()?.let { alert(it1, "Error", it.string()) }
-                    }
+                }
+
+                override fun onFailure(call: Call<Result<List<News>>>, t: Throwable) {
+                    activity?.let { it1 -> alert(it1, "Error", t.localizedMessage!!) }
                     Handler().postDelayed({ getData() }, 5000)
                 }
-            }
 
-            override fun onFailure(call: Call<Result<List<News>>>, t: Throwable) {
-                activity?.let { it1 -> alert(it1, "Error", t.localizedMessage!!) }
-                Handler().postDelayed({ getData() }, 5000)
-            }
-
-        })
+            })
+        } catch (e: Exception) {
+        }
     }
 
     override fun onDestroyView() {
