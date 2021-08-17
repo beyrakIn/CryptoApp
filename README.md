@@ -3,6 +3,13 @@
 ## Play Store
 See on [Play Store](https://play.google.com/store/apps/details?id=com.beyrak.crypto)
 
+## Download
+```
+git clone https://github.com/beyrakIn/CryptoApp.git
+```
+
+## UI
+
 <p float=left>
 <img width=20% src="https://play-lh.googleusercontent.com/jCSfwvwcpfesfCBbfJGk4Wn5aibD69QYXljH3fbDcxeJs0UYBkyNx24BWTIjiiIIjwE=w7200-h3100-rw" />
 <img width=20% src="https://play-lh.googleusercontent.com/Qr23XLHqt33DXBvhYNlLWFQ9SYR0w-fha5mm6e9RPzPX8MuS8rcul0C1oXkztevdhrW5=w7200-h3100-rw" />
