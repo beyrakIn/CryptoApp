@@ -103,17 +103,29 @@ class HomeAdapter(private val coinList: List<CryptoCurrencyMap>) :
 
                             if (coinDetails.statistics.priceChangePercentage24h > 0) {
                                 holder.apply {
-                                    percent.setTextColor(Color.GREEN)
-                                    percent.text = '↑' + round(
-                                        coinDetails.statistics.priceChangePercentage24h, 100.0
-                                    ).toString() + "%"
+                                    percent.apply {
+                                        setTextColor(Color.GREEN)
+                                        text = '↑' + round(
+                                            coinDetails.statistics.priceChangePercentage24h, 100.0
+                                        ).toString() + "%"
+                                    }
+                                    sparkView.setColorFilter(
+                                        Color.GREEN, android.graphics.PorterDuff.Mode.MULTIPLY
+                                    );
                                 }
                             } else {
                                 holder.apply {
-                                    percent.setTextColor(Color.RED)
-                                    percent.text = '↓' + round(
-                                        coinDetails.statistics.priceChangePercentage24h, 100.0
-                                    ).toString() + "%"
+                                    percent.apply {
+                                        setTextColor(Color.RED)
+                                        text = '↓' + round(
+                                            coinDetails.statistics.priceChangePercentage24h, 100.0
+                                        ).toString() + "%"
+                                    }
+
+                                    holder.sparkView.setColorFilter(
+                                        Color.RED, android.graphics.PorterDuff.Mode.MULTIPLY
+                                    );
+
                                 }
                             }
                         } catch (e: Exception) {
