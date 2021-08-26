@@ -179,7 +179,7 @@ class HomeAdapter(private val coinList: List<CryptoCurrencyMap>) :
             Picasso.get().load(logoUrl).into(coinLogo)
 
             if (coinDetail != null) {
-                dialog.setCancelable(false)
+                dialog.setCancelable(true)
                 dialog.setContentView(view)
                 dialog.show()
             } else {
